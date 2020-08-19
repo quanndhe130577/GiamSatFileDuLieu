@@ -139,7 +139,7 @@ namespace ServiceTool
                             int get_KenhID = KenhDAO.GetKenhID(word[1]);
                             if (get_KenhID == 0)
                             {
-                                ShowNotificationMessage(50, "Error", "Kenh khong ton tai !!!", ToolTipIcon.Error);
+                                ShowNotificationMessage(50, "Error", "Kênh không tồn tại !!!", ToolTipIcon.Error);
                                 reader.Close();
                                 return;
                             }
@@ -162,182 +162,183 @@ namespace ServiceTool
                                 sl.ChuKy = short.Parse((i - 1).ToString());
                                 /*sl.GiaTri = Convert.ToDouble(string.Format("{0:0.##}", word[i]) );*/
                                 sl.GiaTri = Convert.ToDouble(word[i]);
-
-                                var rs = SanLuongDAO.InsertSanLuong(sl);
-                                if (rs != "success")
+                                if (!SanLuongDAO.checkExistSL(sl))
                                 {
-                                    ShowNotificationMessage(50, "Error", rs, ToolTipIcon.Error);
-                                    reader.Close();
-                                    return;
-                                }
-
-                                // tinh luy ke
-                                if (checkDiemDoTSLN && checkKenhTSLN)
-                                {
-                                    // tinh tong san luong ngay
-                                    bool checkInsertDay = false;
-                                    bool checkInsertMonth = false;
-                                    bool checkInsertYear = false;
-                                    bool checkInsertMonthYear = false;
-                                    TongSanLuong_Ngay tslng = TongSanLuong_NgayDAO.GetByNgayAndChuKy(time, i - 1);
-                                    TongSanLuong_Thang tslt = TongSanLuong_ThangDAO.GetByTime(time);
-                                    TongSanLuong_Nam tsln = TongSanLuong_NamDAO.GetByTime(time);
-                                    TongSanLuong_ThangNam tsltn = TongSanLuong_ThangNamDAO.GetByTime(time);
-                                    if (tslng == null)
+                                    var rs = SanLuongDAO.InsertSanLuong(sl);
+                                    if (rs != "success")
                                     {
-                                        // create new tslng
-                                        tslng = new TongSanLuong_Ngay()
-                                        {
-                                            Ngay = sl.Ngay,
-                                            ChuKy = sl.ChuKy,
-                                            CongThucID = congThucID,
-                                            GiaTri = 0
-                                        };
-                                        checkInsertDay = true;
-                                    }
-                                    if (tslt == null)
-                                    {
-                                        // create new tslt
-                                        tslt = new TongSanLuong_Thang()
-                                        {
-                                            Thang = time.Month,
-                                            Nam = time.Year,
-                                            GiaTri = 0
-                                        };
-                                        checkInsertMonth = true;
-                                    }
-                                    if (tsln == null)
-                                    {
-                                        // create new tsln
-                                        tsln = new TongSanLuong_Nam()
-                                        {
-                                            Nam = time.Year,
-                                            GiaTri = 0
-                                        };
-                                        checkInsertYear = true;
-                                    }
-                                    if (tsltn == null)
-                                    {
-                                        // create new tsltn
-                                        tsltn = new TongSanLuong_ThangNam()
-                                        {
-                                            Ngay = time,
-                                            GiaTriNam = TongSanLuong_ThangNamDAO.GetClosestYearValue(time),
-                                            GiaTriThang = TongSanLuong_ThangNamDAO.GetClosestMonthValue(time)
-                                        };
-                                        checkInsertMonthYear = true;
-                                    }
-                                    //tinh toan gia tri
-                                    if (listPhanTu[indexPhanTu].index == 0 || divided[listPhanTu[indexPhanTu].index - 1].Equals("+"))
-                                    {
-                                        tslng.GiaTri += sl.GiaTri;
-                                        tslt.GiaTri += sl.GiaTri;
-                                        tsln.GiaTri += sl.GiaTri;
-
-                                        tsltn.GiaTriThang += sl.GiaTri.Value;
-                                        tsltn.GiaTriNam += sl.GiaTri.Value;
-                                    }
-                                    else
-                                    {
-                                        tslng.GiaTri -= sl.GiaTri;
-                                        tslt.GiaTri -= sl.GiaTri;
-                                        tsln.GiaTri -= sl.GiaTri;
-
-                                        tsltn.GiaTriThang -= sl.GiaTri.Value;
-                                        tsltn.GiaTriNam -= sl.GiaTri.Value;
+                                        ShowNotificationMessage(50, "Error", rs, ToolTipIcon.Error);
+                                        reader.Close();
+                                        return;
                                     }
 
-                                    // insert or update ngay
-                                    if (checkInsertDay)
+                                    // tinh luy ke
+                                    if (checkDiemDoTSLN && checkKenhTSLN)
                                     {
-                                        var rs_checkInsertDay = TongSanLuong_NgayDAO.Insert(tslng);
-                                        if (rs_checkInsertDay != "success")
+                                        // tinh tong san luong ngay
+                                        bool checkInsertDay = false;
+                                        bool checkInsertMonth = false;
+                                        bool checkInsertYear = false;
+                                        bool checkInsertMonthYear = false;
+                                        TongSanLuong_Ngay tslng = TongSanLuong_NgayDAO.GetByNgayAndChuKy(time, i - 1);
+                                        TongSanLuong_Thang tslt = TongSanLuong_ThangDAO.GetByTime(time);
+                                        TongSanLuong_Nam tsln = TongSanLuong_NamDAO.GetByTime(time);
+                                        TongSanLuong_ThangNam tsltn = TongSanLuong_ThangNamDAO.GetByTime(time);
+                                        if (tslng == null)
                                         {
-                                            ShowNotificationMessage(50, "Error", rs_checkInsertDay, ToolTipIcon.Error);
-                                            reader.Close();
-                                            return;
+                                            // create new tslng
+                                            tslng = new TongSanLuong_Ngay()
+                                            {
+                                                Ngay = sl.Ngay,
+                                                ChuKy = sl.ChuKy,
+                                                CongThucID = congThucID,
+                                                GiaTri = 0
+                                            };
+                                            checkInsertDay = true;
                                         }
-                                    }
-                                    else
-                                    {
-                                        var rs_checkUpdateDay = TongSanLuong_NgayDAO.Update(tslng);
-                                        if (rs_checkUpdateDay != "success")
+                                        if (tslt == null)
                                         {
-                                            ShowNotificationMessage(50, "Error", rs_checkUpdateDay, ToolTipIcon.Error);
-                                            reader.Close();
-                                            return;
+                                            // create new tslt
+                                            tslt = new TongSanLuong_Thang()
+                                            {
+                                                Thang = time.Month,
+                                                Nam = time.Year,
+                                                GiaTri = 0
+                                            };
+                                            checkInsertMonth = true;
                                         }
-                                    }
-                                    // insert or update thang
-                                    if (checkInsertMonth)
-                                    {
-                                        var rs_checkInsertMon = TongSanLuong_ThangDAO.Insert(tslt);
-                                        if (rs_checkInsertMon != "success")
+                                        if (tsln == null)
                                         {
-                                            ShowNotificationMessage(50, "Error", rs_checkInsertMon, ToolTipIcon.Error);
-                                            reader.Close();
-                                            return;
+                                            // create new tsln
+                                            tsln = new TongSanLuong_Nam()
+                                            {
+                                                Nam = time.Year,
+                                                GiaTri = 0
+                                            };
+                                            checkInsertYear = true;
                                         }
-                                    }
-                                    else
-                                    {
-                                        var rs_checkInsertMon = TongSanLuong_ThangDAO.Update(tslt);
-                                        if (rs_checkInsertMon != "success")
+                                        if (tsltn == null)
                                         {
-                                            ShowNotificationMessage(50, "Error", rs_checkInsertMon, ToolTipIcon.Error);
-                                            reader.Close();
-                                            return;
+                                            // create new tsltn
+                                            tsltn = new TongSanLuong_ThangNam()
+                                            {
+                                                Ngay = time,
+                                                GiaTriNam = TongSanLuong_ThangNamDAO.GetClosestYearValue(time),
+                                                GiaTriThang = TongSanLuong_ThangNamDAO.GetClosestMonthValue(time)
+                                            };
+                                            checkInsertMonthYear = true;
                                         }
-                                    }
-                                    // insert or update nam
-                                    if (checkInsertYear)
-                                    {
-                                        var rs_checkInsertYear = TongSanLuong_NamDAO.Insert(tsln);
-                                        if (rs_checkInsertYear != "success")
+                                        //tinh toan gia tri
+                                        if (listPhanTu[indexPhanTu].index == 0 || divided[listPhanTu[indexPhanTu].index - 1].Equals("+"))
                                         {
-                                            ShowNotificationMessage(50, "Error", rs_checkInsertYear, ToolTipIcon.Error);
-                                            reader.Close();
-                                            return;
+                                            tslng.GiaTri += sl.GiaTri;
+                                            tslt.GiaTri += sl.GiaTri;
+                                            tsln.GiaTri += sl.GiaTri;
+
+                                            tsltn.GiaTriThang += sl.GiaTri.Value;
+                                            tsltn.GiaTriNam += sl.GiaTri.Value;
                                         }
-                                    }
-                                    else
-                                    {
-                                        var rs_checkInsertYear = TongSanLuong_NamDAO.Update(tsln);
-                                        if (rs_checkInsertYear != "success")
+                                        else
                                         {
-                                            ShowNotificationMessage(50, "Error", rs_checkInsertYear, ToolTipIcon.Error);
-                                            reader.Close();
-                                            return;
+                                            tslng.GiaTri -= sl.GiaTri;
+                                            tslt.GiaTri -= sl.GiaTri;
+                                            tsln.GiaTri -= sl.GiaTri;
+
+                                            tsltn.GiaTriThang -= sl.GiaTri.Value;
+                                            tsltn.GiaTriNam -= sl.GiaTri.Value;
                                         }
-                                    }
-                                    // insert or update thang-nam
-                                    if (checkInsertMonthYear)
-                                    {
-                                        var rs_checkInsertYear = TongSanLuong_ThangNamDAO.Insert(tsltn);
-                                        if (rs_checkInsertYear != "success")
+
+                                        // insert or update ngay
+                                        if (checkInsertDay)
                                         {
-                                            ShowNotificationMessage(50, "Error", rs_checkInsertYear, ToolTipIcon.Error);
-                                            reader.Close();
-                                            return;
+                                            var rs_checkInsertDay = TongSanLuong_NgayDAO.Insert(tslng);
+                                            if (rs_checkInsertDay != "success")
+                                            {
+                                                ShowNotificationMessage(50, "Error", rs_checkInsertDay, ToolTipIcon.Error);
+                                                reader.Close();
+                                                return;
+                                            }
                                         }
-                                    }
-                                    else
-                                    {
-                                        var rs_checkInsertYear = TongSanLuong_ThangNamDAO.Update(tsltn);
-                                        if (rs_checkInsertYear != "success")
+                                        else
                                         {
-                                            ShowNotificationMessage(50, "Error", rs_checkInsertYear, ToolTipIcon.Error);
-                                            reader.Close();
-                                            return;
+                                            var rs_checkUpdateDay = TongSanLuong_NgayDAO.Update(tslng);
+                                            if (rs_checkUpdateDay != "success")
+                                            {
+                                                ShowNotificationMessage(50, "Error", rs_checkUpdateDay, ToolTipIcon.Error);
+                                                reader.Close();
+                                                return;
+                                            }
+                                        }
+                                        // insert or update thang
+                                        if (checkInsertMonth)
+                                        {
+                                            var rs_checkInsertMon = TongSanLuong_ThangDAO.Insert(tslt);
+                                            if (rs_checkInsertMon != "success")
+                                            {
+                                                ShowNotificationMessage(50, "Error", rs_checkInsertMon, ToolTipIcon.Error);
+                                                reader.Close();
+                                                return;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var rs_checkInsertMon = TongSanLuong_ThangDAO.Update(tslt);
+                                            if (rs_checkInsertMon != "success")
+                                            {
+                                                ShowNotificationMessage(50, "Error", rs_checkInsertMon, ToolTipIcon.Error);
+                                                reader.Close();
+                                                return;
+                                            }
+                                        }
+                                        // insert or update nam
+                                        if (checkInsertYear)
+                                        {
+                                            var rs_checkInsertYear = TongSanLuong_NamDAO.Insert(tsln);
+                                            if (rs_checkInsertYear != "success")
+                                            {
+                                                ShowNotificationMessage(50, "Error", rs_checkInsertYear, ToolTipIcon.Error);
+                                                reader.Close();
+                                                return;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var rs_checkInsertYear = TongSanLuong_NamDAO.Update(tsln);
+                                            if (rs_checkInsertYear != "success")
+                                            {
+                                                ShowNotificationMessage(50, "Error", rs_checkInsertYear, ToolTipIcon.Error);
+                                                reader.Close();
+                                                return;
+                                            }
+                                        }
+                                        // insert or update thang-nam
+                                        if (checkInsertMonthYear)
+                                        {
+                                            var rs_checkInsertYear = TongSanLuong_ThangNamDAO.Insert(tsltn);
+                                            if (rs_checkInsertYear != "success")
+                                            {
+                                                ShowNotificationMessage(50, "Error", rs_checkInsertYear, ToolTipIcon.Error);
+                                                reader.Close();
+                                                return;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            var rs_checkInsertYear = TongSanLuong_ThangNamDAO.Update(tsltn);
+                                            if (rs_checkInsertYear != "success")
+                                            {
+                                                ShowNotificationMessage(50, "Error", rs_checkInsertYear, ToolTipIcon.Error);
+                                                reader.Close();
+                                                return;
+                                            }
                                         }
                                     }
                                 }
                             }
-
                         }
                         count++;
                     }
-                    ShowNotificationMessage(50, "Success", "Insert success!!!!", ToolTipIcon.Info);
+                    ShowNotificationMessage(50, "Success", "Reading file 'Sản Lượng' finished!!!!", ToolTipIcon.Info);
                     reader.Close();
                     break;
                 }

@@ -4,6 +4,7 @@ namespace ServiceTool.Model.DbModel
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
+    using System.Collections.Generic;
 
     public partial class DbContextService : DbContext
     {
@@ -34,6 +35,7 @@ namespace ServiceTool.Model.DbModel
         public virtual DbSet<TongSanLuong_Ngay> TongSanLuong_Ngay { get; set; }
         public virtual DbSet<TongSanLuong_Thang> TongSanLuong_Thang { get; set; }
         public virtual DbSet<TongSanLuong_ThangNam> TongSanLuong_ThangNam { get; set; }
+        public IEnumerable<object> ChiSoChot { get; internal set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -139,7 +139,7 @@ namespace ServiceTool
                         }
                     }
 
-                    ShowNotificationMessage(50, "Success", "Insert success!!!!", ToolTipIcon.Info);
+                    ShowNotificationMessage(50, "Success", "Reading file 'Thông số vận hành' finished!!!!", ToolTipIcon.Info);
                     reader.Close();
                     break;
                 }

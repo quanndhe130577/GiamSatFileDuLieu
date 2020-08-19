@@ -116,7 +116,7 @@ namespace ServiceTool
                         }
                     }
 
-                    ShowNotificationMessage(50, "Success", "Insert success!!!!", ToolTipIcon.Info);
+                    ShowNotificationMessage(50, "Success", "Reading file 'Chỉ Số Chốt' finished!!!!", ToolTipIcon.Info);
                     reader.Close();
                     break;
                 }

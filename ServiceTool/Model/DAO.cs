@@ -41,6 +41,18 @@ namespace DocDuLieuCongTo.Model
         public static class SanLuongDAO
         {
             static readonly DbContextService db = new DbContextService();
+            public static bool checkExistSL(SanLuong sl)
+            {
+                using (var db = new DbContextService())
+                {
+                    var rs = db.SanLuongs.Where(x => x.DiemDoID == sl.DiemDoID && x.KenhID == sl.KenhID && x.Ngay == sl.Ngay && x.ChuKy == sl.ChuKy).FirstOrDefault();
+                    if (rs != null)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
             public static string InsertSanLuong(SanLuong sl)
             {
                 try
@@ -159,6 +171,11 @@ namespace DocDuLieuCongTo.Model
                 tslng.GiaTri = Convert.ToDouble(string.Format("{0:0.##}", tslng.GiaTri.ToString()));
                 try
                 {
+                    var rs = db.TongSanLuong_Ngay.Where(x => x.Ngay == tslng.Ngay && x.ChuKy == tslng.ChuKy).FirstOrDefault();
+                    if(rs != null)
+                    {
+                        return "Bản ghi TongSanLuong_Ngay đã tồn tại";
+                    }
                     db.TongSanLuong_Ngay.Add(tslng);
                     db.SaveChanges();
                     return "success";
@@ -210,6 +227,11 @@ namespace DocDuLieuCongTo.Model
 
                 try
                 {
+                    var rs = db.TongSanLuong_Thang.Where(x => x.Thang == tslt.Thang && x.Nam == tslt.Nam).FirstOrDefault();
+                    if (rs != null)
+                    {
+                        return "Bản ghi TongSanLuong_Thang đã tồn tại";
+                    }
                     db.TongSanLuong_Thang.Add(tslt);
                     db.SaveChanges();
                     return "success";
@@ -260,6 +282,11 @@ namespace DocDuLieuCongTo.Model
 
                 try
                 {
+                    var rs = db.TongSanLuong_Nam.Where(x => x.Nam == tsln.Nam).FirstOrDefault();
+                    if (rs != null)
+                    {
+                        return "Bản ghi TongSanLuong_Nam đã tồn tại";
+                    }
                     //db.TongSanLuong_Nam.Add(tsln);
                     db.Entry(tsln).State = EntityState.Added;
                     db.SaveChanges();
@@ -331,6 +358,11 @@ namespace DocDuLieuCongTo.Model
                 tsltn.GiaTriNam = Convert.ToDouble(string.Format("{0:0.##}", tsltn.GiaTriNam.ToString()));
                 try
                 {
+                    var rs = db.TongSanLuong_ThangNam.Where(x => x.Ngay == tsltn.Ngay).FirstOrDefault();
+                    if (rs != null)
+                    {
+                        return "Bản ghi TongSanLuong_ThangNam đã tồn tại";
+                    }
                     db.TongSanLuong_ThangNam.Add(tsltn);
                     db.SaveChanges();
                     return "success";
@@ -382,6 +414,11 @@ namespace DocDuLieuCongTo.Model
             {
                 try
                 {
+                    var rs = db.ChiSoChots.Where(x => x.CongToSerial == csc.CongToSerial && x.thang == csc.thang).FirstOrDefault();
+                    if (rs != null)
+                    {
+                        return "Bản ghi ChiSoChot đã tồn tại";
+                    }
                     db.ChiSoChots.Add(csc);
                     db.SaveChanges();
                     return "success";
@@ -414,6 +451,11 @@ namespace DocDuLieuCongTo.Model
             {
                 try
                 {
+                    var rs = db.ThongSoVanHanhs.Where(x => x.Serial == tsvh.Serial && x.ThoiGianCongTo == tsvh.ThoiGianCongTo).FirstOrDefault();
+                    if (rs != null)
+                    {
+                        return "Bản ghi ThongSoVanHanh đã tồn tại";
+                    }
                     db.ThongSoVanHanhs.Add(tsvh);
                     db.SaveChanges();
                     return "success";
